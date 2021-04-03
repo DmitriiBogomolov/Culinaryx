@@ -1,0 +1,40 @@
+
+
+
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block tab_title %}Сброс пароля{% endblock %}
+{% block tab_divider %} - {% endblock %}
+
+
+{% block page_title %}Сброс пароля{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href={% static "css/pages/form.css" %}>
+
+
+
+
+
+
+
+<div class="form-container">
+    
+
+    <form class="form" method="post" action="">
+        {% csrf_token %}
+
+
+        <p class="form__info-text" style="color:green">
+            Для сброса пороля перейдите по ссылке, отправленной на указанный электронный адрес.
+        </p>
+
+
+    </form>
+
+</div>
+
+{% endblock %}

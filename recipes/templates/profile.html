@@ -1,0 +1,50 @@
+{% extends "recipes.html" %}
+{% load static %}
+
+{% block tab_title %}{{ profile.name }}{% endblock %}
+{% block tab_divider %} - {% endblock %}
+
+
+
+{% block page_title %}{{ profile.name }}{% endblock %}
+
+
+
+{% block page_header_controlls %}
+
+
+{% if profile != user %}
+    <div class="author-subscribe" data-author={{profile.id}}>
+
+        {% if not subscribed %}
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
+        {% else %}
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></p>
+        {% endif %}
+
+        
+    </div>
+
+{% endif %}
+
+
+{% endblock %}
+
+
+
+{% block page_scripts %}
+
+<script src={% static "js/components/MainCards.js" %}></script>
+
+<script src={% static "js/components/Purchases.js" %}></script>
+<script src={% static "js/components/Favorites.js" %}></script>
+<script src={% static "js/components/Subscribe.js" %}></script>
+
+<script src={% static "js/components/AuthorRecipe.js" %}></script>
+
+
+
+<script src={% static "js/pages/authorRecipe.js" %}></script>
+
+
+{% endblock %}

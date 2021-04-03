@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block tab_title %}Подписки{% endblock %}
+{% block tab_divider %} - {% endblock %}
+
+{% block page_title %}Мои подписки{% endblock %}
+
+
+{% block content %}
+
+
+<link rel="stylesheet" href={% static "css/pages/subscribes.css" %}>
+
+
+{% load extras %}
+{% csrf_token %}
+
+
+<div class="card-list">
+
+    {% for subscribe in subscribes %}
+        <div class="card-user" data-author={{subscribe.id}}>
+            <div class="card-user__header">
+                <h2 class="card-user__title">{{ subscribe.name }}</h2>
+            </div>
+            <div class="card-user__body">
+                <ul class="card-user__items">
+
+                    {% for recipe in subscribe_recipes|get_item:subscribe %}
+                        <li class="card-user__item">
+                            <div class="recipe">
+
+                                {% if recipe.image %}
+                                    <img src={{ recipe.image.url }} alt="{{ recipe.title }}.image" class="recipe__image">
+                                {% else %}
+                                    <img src="/media/placeholder.png" alt="{{ recipe.title }}.image" class="recipe__image">
+                                {% endif %}
+
+                                <h3 class="recipe__title">{{ recipe.title }}</h3>
+                                <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
+                            </div>
+                        </li>
+                    {% endfor %}
+
+                    <li class="card-user__item">
+                        <a href={% url "profile" username=subscribe.username %} class="card-user__link link">
+                            {% with count=subscribe_recipes_count|get_item:subscribe %}
+                                Ещё {{ count }} {{ count|converte_word:'рецепт'}}...
+                            {% endwith %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-user__footer">
+                <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+            </div>
+        </div>
+    {% endfor %}
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block page_scripts %}
+
+<script src={% static "js/components/MainCards.js" %}></script>
+<script src={% static "js/components/MyFollow.js" %}></script>
+<script src={% static "js/components/Subscribe.js" %}></script>
+<script src={% static "js/pages/subscribes.js" %}></script>
+
+{% endblock %}

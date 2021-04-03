@@ -1,0 +1,61 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block tab_title %}Список покупок{% endblock %}
+{% block tab_divider %} - {% endblock %}
+
+
+{% block page_title %}Список покупок{% endblock %}
+
+
+
+{% block content %}
+
+   {% if recipes %}
+
+        {% csrf_token %}
+        <link rel="stylesheet" href={% static "css/pages/shopList.css" %}>
+        <div class="card-list card-list_column">
+
+            <ul class="shopping-list">
+                {% for recipe in recipes %}
+                    <li class="shopping-list__item" data-id={{recipe.id}}>
+                        <div class="recipe recipe_reverse">
+
+                            {% if recipe.image %}
+                                <img src={{ recipe.image.url }} alt="{{ recipe.title }}.image" class="recipe__image recipe__image_big">
+                            {% else %}
+                                <img src="/media/placeholder.png" alt="{{ recipe.title }}.image" class="recipe__image recipe__image_big">
+                            {% endif %}
+
+                            <h3 class="recipe__title">{{ recipe.title }}</h3>
+                            <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
+                        </div>
+                        <a href="#" class="shopping-list__button link">Удалить</a>
+                        
+                    </li>
+                {% endfor %}
+
+            <a href={% url 'download_shopping_list' %}><button class="button button_style_blue" id="download_button">Скачать список</button></a>
+        </div>
+
+
+    {% else %}
+        Здесь пусто.
+    {% endif %}
+
+{% endblock %}
+
+
+{% block page_scripts %}
+
+    {% if recipes %}
+        <script src={% static "/js/components/ShopList.js" %}></script>
+        <script src={% static "js/pages/shopping_list.js" %}></script>
+    {% endif %}
+
+{% endblock %}
+
+
+

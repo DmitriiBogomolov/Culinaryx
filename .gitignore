@@ -127,3 +127,29 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+**/.history
+
+# frontend project
+.frontend
+frontend/
+
+# ingridients data
+.ingridients
+ingridients/
+
+
+# sent_emails
+.sent_emails
+sent_emails/
+
+static.zip

@@ -1,0 +1,5 @@
+.link_deactivated {
+    text-decoration: none;
+    pointer-events: none;
+    cursor: default;
+}

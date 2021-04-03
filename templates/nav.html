@@ -1,0 +1,64 @@
+{% url 'recipes' as recipes_url %}
+{% url 'subscribes' as subscribes_url %}
+{% url 'recipe_create' as recipe_create_url %}
+{% url 'favorites' as favorites_url %}
+{% url 'shopping_list' as shopping_list_url %}
+{% url 'signin' as signin_url %}
+{% url 'signup' as signup_url %}
+{% url 'change_password' as change_password_url %}
+{% url 'logout' as logout_url %}
+
+
+<nav class="nav">
+
+    <div class="nav__container container">
+        <ul class="nav__items list">
+            <li class="nav__item {% if request.path == recipes_url %}nav__item_active{% endif %}">
+                <a href="{{recipes_url}}" class="nav__link link">Рецепты</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav__item {% if request.path == subscribes_url %}nav__item_active{% endif %}">
+                    <a href="{{subscribes_url}}" class="nav__link link">Мои подписки</a>
+                </li>
+                <li class="nav__item {% if request.path == recipe_create_url %}nav__item_active{% endif %}">
+                    <a href="{{recipe_create_url}}" class="nav__link link">Создать рецепт</a>
+                </li>
+                <li class="nav__item {% if request.path == favorites_url %}nav__item_active{% endif %}">
+                    <a href="{{favorites_url}}" class="nav__link link">Избранное</a>
+                </li>
+                <li class="nav__item {% if request.path == shopping_list_url %}nav__item_active{% endif %}">
+                    <a href="{{shopping_list_url}}" class="nav__link link">Список покупок</a> 
+                    {% if user.is_authenticated %}
+                        {% if user.shopping_list.count != 0 %}
+                            <span class="badge badge_style_blue nav__badge" id="counter">{{user.shopping_list.count}}</span>
+                        {% else %}
+                            <span class="badge badge_style_blue nav__badge" id="counter" hidden=true>0</span>
+                        {% endif %}
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="nav__item_disabled">
+                    <a href="{{shopping_list_url}}" class="nav__link link">Список покупок</a> 
+                </li>
+            {% endif %}
+
+        </ul>
+        <ul class="nav__items list">
+            {% if user.is_authenticated %}
+                <li class="nav__item {% if request.path == change_password_url %}nav__item_active{% endif %}">
+                    <a href="{{change_password_url}}" class="nav__link link">Изменить пароль</a>
+                </li>
+                <li class="nav__item {% if request.path == logout_url %}nav__item_active{% endif %}">
+                    <a href="{{logout_url}}" class="nav__link link">Выход</a>
+                </li>
+            {% else %}
+                <li class="nav__item">
+                    <a href="{{signin_url}}" class="nav__link link">Войти</a>
+                </li>
+                <li class="nav__item">
+                    <a href="{{signup_url}}" class="button button_style_blue">Создать аккаунт</a>
+                </li>
+            {% endif%}
+        </ul>
+    </div>
+</nav>
