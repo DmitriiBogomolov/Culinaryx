@@ -14,6 +14,7 @@ services:
   app:
     build: .
     restart: always
+    container_name: app
     volumes:
       - ./static/:/app/static/
       - ./media/:/app/media/
@@ -27,6 +28,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-nginx
+    container_name: web
     volumes:
       - ./helpers/templates:/etc/nginx/templates
       - ./static/:/app/static/
