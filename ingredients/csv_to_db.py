@@ -1,7 +1,6 @@
 
 
-from dictionaries.models import Unit, Ingridient
-
+from dictionaries.models import Ingridient, Unit
 
 """
 Скрипт django shell для заполнения БД ингридиентами

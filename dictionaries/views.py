@@ -1,7 +1,6 @@
-from .models import Ingridient
-from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
+from .models import Ingridient
 
 """
 Получает из GET параметра начало названия ингридиента

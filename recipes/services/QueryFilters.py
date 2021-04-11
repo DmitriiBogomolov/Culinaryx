@@ -1,5 +1,6 @@
-from django.db.models import Q
 import urllib
+
+from django.db.models import Q
 
 
 def filter_by_tags(queryset, tags_to_filter, tags_all):

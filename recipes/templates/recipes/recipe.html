@@ -13,6 +13,9 @@
 
 
 {% csrf_token %}
+
+<div class="single-card" data-id="{{recipe.id}}" data-author="{{recipe.author.id}}">
+
     {% if recipe.image %}
         <img src={{ recipe.image.url }} alt="{{ recipe.title }}.image" class="single-card__image">
     {% else %}
@@ -47,7 +50,7 @@
                 <li class="single-card__item">
                     <p class="single-card__text">
                         <span class="icon-user"></span> 
-                        <a href="{% url "profile" username=recipe.author.username %}" {% if not user.is_authenticated %} class="link_deactivated" {% endif %} style="color: black">{{ recipe.author.name }}</a>
+                        <a href="{% url "profile" username=recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a>
                     </p>
                 </li>
 
@@ -61,10 +64,14 @@
         </div>
         <ul class="single-card__items">
 
-            {% if recipe not in user.shopping_list.all %}
-                <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-            {% else %}        
-                <li class="single-card__item"><button class="button button_style_blue" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button></li>
+            {% if user.is_authenticated %}
+                {% if recipe not in user.shopping_list.all %}
+                    <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+                {% else %}        
+                    <li class="single-card__item"><button class="button button_style_blue" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button></li>
+                {% endif %}
+            {% else %}
+                <a href="{% url "signin" %}?next={{ request.get_full_path }}"><li class="single-card__item"><button class="button button_style_blue"><span class="icon-plus"></span> Добавить в покупки</button></li></a>
             {% endif %}
 
 
@@ -76,6 +83,8 @@
                         <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></li>
                     {% endif %}
                 {% endif %}
+            {% else %}
+                <a href="{% url "signin" %}?next={{ request.get_full_path }}"><li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe">Подписаться на автора</button></li></a>
             {% endif %}
         </ul>
 
@@ -93,6 +102,7 @@
             <p class=" single-card__section-text">{{ recipe.description }}</p>
         </div>
     </div>
+
 </div>
 
 {% endblock %}

@@ -7,21 +7,22 @@
 
 {% block page_title %}Избранное{% endblock %}
 {% block page_header_addon %}
-    {% include 'tags_filter.html' %}
+    {% include 'recipes/tags_filter.html' %}
 {% endblock%}
 
 
 {% block content %}
 
 
+{% if favorites %}
+
+
 {% csrf_token %}
-
-
 <div class="card-list">
 
     {% for recipe in favorites %}
         <div class="card" data-id={{recipe.id}}>
-            <a href="#" class="link" target="_blank">
+            <a href="{% url "recipe_detail" pk=recipe.id %}" class="link" target="_blank">
                 {% if recipe.image %}
                     <img src={{ recipe.image.url }} alt="{{ recipe.title }}.image" class="card__image">
                 {% else %}
@@ -29,7 +30,7 @@
                 {% endif %}
             </a>
             <div class="card__body">
-                <a class="card__title link" href="#" target="_blank">{{ recipe.title }}</a>
+                <a class="card__title link" href="{% url "recipe_detail" pk=recipe.id %}" target="_blank">{{ recipe.title }}</a>
                 <ul class="card__items">
                     {% for tag in recipe.tags.all %}
                         <li class="card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.name }}</span></li>
@@ -37,7 +38,7 @@
                 </ul>
                 <div class="card__items card__items_column">
                     <p class="card__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
-                    <a href="{% url "profile" username=recipe.author.username %}" style="color: black">{{ recipe.author.name }}</a>
+                    <a href="{% url "profile" username=recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a>
                 </div>
             </div>
             <div class="card__footer">
@@ -61,9 +62,14 @@
     {% endfor %}
 </div>
 
+{% if page_obj.paginator.num_pages > 1 %}
+    {% include 'recipes/pagination.html' %}
+{% endif %}
 
-{% include 'pagination.html' %}
 
+{% else %}
+    Здесь пусто
+{% endif %}
 
 {% endblock %}
 

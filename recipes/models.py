@@ -1,9 +1,9 @@
-from django.db import models
-from dictionaries.models import Ingridient
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.shortcuts import reverse
 
+from dictionaries.models import Ingridient
 
 User = get_user_model()
 
@@ -13,13 +13,21 @@ User = get_user_model()
 
 class Tag(models.Model):
 
+    class Meta:
+        verbose_name = "Тэг"
+        verbose_name_plural = "Тэги"
+
     name = models.CharField(
         max_length=24,
         primary_key=True,
-        verbose_name="Название тэга."
+        verbose_name="Название тэга"
     )
 
-    color = models.CharField(default='green', max_length=30)
+    color = models.CharField(
+        default="green",
+        max_length=30,
+        verbose_name="Цвет (дополняет класс элемента dom)"
+    )
 
     def __str__(self):
         return self.name
@@ -29,6 +37,10 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+
+    class Meta:
+        verbose_name = "Рецепт"
+        verbose_name_plural = "Рецепты"
 
     title = models.CharField(
         max_length=24,
@@ -64,7 +76,7 @@ class Recipe(models.Model):
         through="RecipeIngridient"
     )
 
-    time = models.IntegerField(
+    time = models.PositiveIntegerField(
         verbose_name="Время приготовления в минутах",
         validators=[MaxValueValidator(600), MinValueValidator(1)]
     )
@@ -73,7 +85,7 @@ class Recipe(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('recipe_detail', kwargs={'pk': self.id})
+        return reverse("recipe_detail", kwargs={"pk": self.id})
 
 
 "     ----    ----    ----    ----    ----    ----    ----    ----    ----    "

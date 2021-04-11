@@ -1,10 +1,11 @@
 from django import forms
-from .models import Recipe
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
-from dictionaries.models import Ingridient
 from django.core import validators
-from .models import RecipeIngridient, Tag
+from django.core.exceptions import ValidationError
+
+from dictionaries.models import Ingridient
+
+from .models import Recipe, RecipeIngridient, Tag
 
 user = get_user_model()
 
@@ -24,12 +25,12 @@ class RecipeForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super(RecipeForm, self).__init__(*args, **kwargs)
 
-    """
-    Обрабатывает неопределенное количество полей формы вида
-    'nameIngredient_1=name', 'valueIngredient_1=value'
-    сохраняет список ингридиентов ingridients_list
-    """
     def clean_ingridients(self):
+        """
+        Обрабатывает неопределенное количество полей формы вида
+        'nameIngredient_1=name', 'valueIngredient_1=value'
+        сохраняет список ингридиентов ingridients_list
+        """
         data = self.data
 
         self.ingridients_list = []
@@ -71,11 +72,11 @@ class RecipeForm(forms.ModelForm):
 
         return data
 
-    """
-    Устанавливает автора, создает промежуточные таблицы,
-    сохрняет форму
-    """
     def save(self, commit=True):
+        """
+        Устанавливает автора, создает промежуточные таблицы,
+        сохрняет форму
+        """
         instance = super(RecipeForm, self).save(commit=False)
         instance.author = self.user
 

@@ -5,7 +5,6 @@
 {% block tab_title %}Войти на сайт{% endblock %}
 {% block tab_divider %} - {% endblock %}
 
-
 {% block page_title %}Войти на сайт{% endblock %}
 
 {% block content %}
@@ -13,15 +12,10 @@
 <link rel="stylesheet" href={% static "css/pages/form.css" %}>
 
 
-
-
-
-
-
 <div class="form-container">
     
-
     <form class="form" method="post" action="{% url 'signin' %}">
+    <input type="hidden" name="next" value="{{ next }}">
     {% csrf_token %}
     {% if form.non_field_errors %}
 
@@ -29,7 +23,7 @@
 
     
     {% elif next %}         
-        <p class="form__error-space">Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей.<br></p>
+        <p class="form__error-space">Войдите в систему для продолжения.<br></p>
     {% endif %}
 
         <div class="form__group">
@@ -49,8 +43,11 @@
         <div class="form__footer">
             <button class="button button_style_blue">Войти</button>
             <a class="form__forgot-link" href={% url 'reset_password' %}>Забыли пароль?</a>
+            <a class="form__forgot-link" href="{% url 'signup' %}?next={{next}}">Создать аккаунт</a>
         </div>
+
     </form>
+
 </div>
 
 {% endblock %}

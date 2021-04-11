@@ -15,21 +15,18 @@
 <div class="form-container">
     
     <form class="form" method="post" action="{% url 'signup' %}">
-
-    {% if form.errors %}
-        <p class="form__error-space">Укажите корректные данные.</span>
-    {% endif %}  
+    <input type="hidden" name="next" value="{{ next }}">
 
     {% csrf_token %}
         <div class="form__group">
-            <label for="id_name" class="form__label">Имя</label>
+            <label for="id_name" class="form__label">Имя Фамилия</label>
             <div class="form__field-group">
-                <input type="text" name="name" id="id_name" class="form__input" value={{form.cleaned_data.name}}>
-                <span class="form__error">{{form.name.errors}}</span>
+                <input type="text" name="full_name" id="id_name" class="form__input" value="{{form.cleaned_data.full_name}}">
+                <span class="form__error">{{form.full_name.errors}}</span>
             </div>
         </div>
         <div class="form__group">
-            <label for="id_username" class="form__label">Имя пользователя</label>
+            <label for="id_username" class="form__label">Логин</label>
             <div class="form__field-group">
                 <input type="text" name="username" id="id_username" class="form__input" value={{form.cleaned_data.username}}>
                 <span class="form__error">{{form.username.errors}}</span>
@@ -50,7 +47,7 @@
             </div>
         </div>
         <div class="form__group">
-            <label for="id_password2" class="form__label">Пароль</label>
+            <label for="id_password2" class="form__label">Подтверждение пароля</label>
             <div class="form__field-group">
                 <input type="password" name="password2" id="id_password2" class="form__input">
                 <span class="form__error">{{form.password2.errors}}</span>

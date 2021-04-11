@@ -19,6 +19,9 @@
 
 <div class="card-list">
 
+    {% if subscribes %}
+
+
     {% for subscribe in subscribes %}
         <div class="card-user" data-author={{subscribe.id}}>
             <div class="card-user__header">
@@ -27,7 +30,7 @@
             <div class="card-user__body">
                 <ul class="card-user__items">
 
-                    {% for recipe in subscribe_recipes|get_item:subscribe %}
+                    {% for recipe in subscribe_recipes|get_item:subscribe.id %}
                         <li class="card-user__item">
                             <div class="recipe">
 
@@ -45,7 +48,7 @@
 
                     <li class="card-user__item">
                         <a href={% url "profile" username=subscribe.username %} class="card-user__link link">
-                            {% with count=subscribe_recipes_count|get_item:subscribe %}
+                            {% with count=subscribe_recipes_count|get_item:subscribe.id %}
                                 Ещё {{ count }} {{ count|converte_word:'рецепт'}}...
                             {% endwith %}
                         </a>
@@ -57,6 +60,12 @@
             </div>
         </div>
     {% endfor %}
+
+
+
+    {% else %}
+    Здесь пусто
+    {% endif %}
 
 
 </div>

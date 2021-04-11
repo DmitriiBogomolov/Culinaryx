@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import EmailValidator
+from django.db import models
+
 from .validators import validate_name, validate_username
 
 
@@ -14,18 +15,7 @@ class User(AbstractUser):
         blank=False,
         null=False,
         unique=True,
-        verbose_name="username"
-    )
-
-    name = models.TextField(
-        validators=[
-            validate_name
-        ],
-        max_length=28,
-        blank=False,
-        null=False,
-        unique=True,
-        verbose_name="name"
+        verbose_name="Логин"
     )
 
     email = models.EmailField(
@@ -36,7 +26,7 @@ class User(AbstractUser):
         blank=False,
         null=False,
         unique=True,
-        verbose_name="email"
+        verbose_name="Email"
     )
 
     subscribes = models.ManyToManyField(

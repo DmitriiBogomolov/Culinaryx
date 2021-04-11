@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_copy
 .venv
 env/
 venv/
@@ -153,3 +154,9 @@ ingridients/
 sent_emails/
 
 static.zip
+
+.vscode
+vscode/
+
+.ingridients
+ingridients/

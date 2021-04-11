@@ -1,26 +1,25 @@
-from django.views.generic.edit import CreateView
-from .models import Recipe, RecipeIngridient, Tag
-from django.shortcuts import get_object_or_404
-from .forms import RecipeForm
-from django.shortcuts import reverse
-from django.views.generic.list import ListView
-from django.views.generic import DetailView
-from django.contrib.auth import get_user_model
-from django.http import JsonResponse
 import json
-from django.core.paginator import EmptyPage, Paginator
-from django.http import HttpResponse
-from django.views.generic.edit import UpdateView
+
+from django.shortcuts import render
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.list import ListView
+from django.http import HttpResponseNotAllowed
+
+from dictionaries.models import Ingridient
+
+from .forms import RecipeForm
+from .models import Recipe, RecipeIngridient
+from .services.CustomViews import FilteredListView
 from .services.SafePaginator import SafePaginator
-from .services.QueryFilters import (filter_by_tags,
-                                    parse_filters_from_url)
 from .services.ShoppingList import (build_shopping_list,
                                     get_string_by_shopping_list)
-from .services.CustomViews import FilteredListView
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-
 
 User = get_user_model()
 
@@ -37,19 +36,19 @@ User = get_user_model()
 # Страница рецептов
 class RecipesView(FilteredListView):
     model = Recipe
-    template_name = "recipes.html"
+    template_name = "recipes/recipes.html"
     context_object_name = "recipes"
     paginate_by = 6
-    url = reverse_lazy('recipes')
+    url = reverse_lazy("recipes")
 
 
 # Страница избранного
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class FavoritesView(FilteredListView):
-    template_name = "favorites.html"
-    context_object_name = 'favorites'
+    template_name = "recipes/favorites.html"
+    context_object_name = "favorites"
     paginate_by = 6
-    url = reverse_lazy('favorites')
+    url = reverse_lazy("favorites")
 
     def get_queryset(self):
         queryset = super().get_queryset(self.request.user.favorites.all())
@@ -57,33 +56,36 @@ class FavoritesView(FilteredListView):
 
 
 # Страница профиля пользователя
-@method_decorator(login_required, name='dispatch')
 class ProfileView(FilteredListView):
-    template_name = "profile.html"
+    template_name = "recipes/profile.html"
     context_object_name = "recipes"
     paginate_by = 6
 
     def get_queryset(self):
-        self.profile = User.objects.get(username=self.kwargs['username'])
+        self.profile = get_object_or_404(User, username=self.kwargs["username"])
         queryset = super().get_queryset(Recipe.objects.filter(author=self.profile))
         return queryset
 
     def get_context_data(self, **kwargs):
+        self.url = reverse_lazy("profile", kwargs={"username": self.kwargs["username"]})
         context = super(ProfileView, self).get_context_data(**kwargs)
 
-        subscribed = self.request.user.subscribes.filter(id=self.profile.id).exists()
+        if self.request.user.is_authenticated:
+            subscribed = self.request.user.subscribes.filter(id=self.profile.id).exists()
+        else:
+            subscribed = []
 
-        context['profile'] = self.profile
-        context['subscribed'] = subscribed
+        context["profile"] = self.profile
+        context["subscribed"] = subscribed
 
         return context
 
 
 # Страница подписок
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class SubscribesView(ListView):
-    template_name = "subscribes.html"
-    context_object_name = 'subscribes'
+    template_name = "recipes/subscribes.html"
+    context_object_name = "subscribes"
     displayed_recipes_count = 3
     paginator_class = SafePaginator
     paginate_by = 6
@@ -98,22 +100,23 @@ class SubscribesView(ListView):
         subscribe_recipes = {}
         subscribe_recipes_count = {}
 
-        for author in self.get_queryset():
-            query = Recipe.objects.filter(author=author)
+        for author in self.get_queryset().values():
+            query = Recipe.objects.filter(author__id=author["id"])
             set_to_context = query[:self.displayed_recipes_count]
-            subscribe_recipes[author] = set_to_context
-            subscribe_recipes_count[author] = query.count() - set_to_context.count()
+            subscribe_recipes[author["id"]] = set_to_context
+            subscribe_recipes_count[author["id"]] = query.count() - set_to_context.count()
 
-        context['subscribe_recipes'] = subscribe_recipes
-        context['subscribe_recipes_count'] = subscribe_recipes_count
+        context["subscribe_recipes"] = subscribe_recipes
+        context["subscribe_recipes_count"] = subscribe_recipes_count
+
         return context
 
 
 # Страницы списка покупок
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class ShoppingListView(ListView):
-    template_name = "shopping_list.html"
-    context_object_name = 'recipes'
+    template_name = "recipes/shopping_list.html"
+    context_object_name = "recipes"
 
     def get_queryset(self):
         user = self.request.user
@@ -121,15 +124,15 @@ class ShoppingListView(ListView):
 
 
 # Возвращает файл с ингридиентами из списка покупок
-@method_decorator(login_required, name='dispatch')
+@login_required
 def get_shopping_list_txt(request):
-    file_name = 'shopping_list.txt'
+    file_name = "recipes/shopping_list.txt"
     slist = build_shopping_list(request)
 
     response_content = get_string_by_shopping_list(slist)
 
     response = HttpResponse(response_content, content_type="text/plain, charset=utf8")
-    response['Content-Disposition'] = f'attachment; filename={file_name}'
+    response["Content-Disposition"] = f"attachment; filename={file_name}"
 
     return response
 
@@ -142,53 +145,55 @@ def get_shopping_list_txt(request):
 
 "     ----    ----    ----    ----    ----    ----    ----    ----    ----    "
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class RecipeCreateView(CreateView):
     # Уникальные элементы шаблона
     title = "Создание рецепта"
     button_capture = "Создать рецепт"
-    action = reverse_lazy('recipe_create')
+    action = reverse_lazy("recipe_create")
 
-    template_name = "recipe_edit.html"
+    template_name = "recipes/recipe_edit.html"
     form_class = RecipeForm
 
     def get_context_data(self, **kwargs):
         context = super(RecipeCreateView, self).get_context_data(**kwargs)
 
-        context['title'] = self.title
-        context['action'] = self.action
-        context['button_capture'] = self.button_capture
+        context["title"] = self.title
+        context["action"] = self.action
+        context["button_capture"] = self.button_capture
 
         return context
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super(RecipeCreateView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class RecipeEditView(UpdateView):
     # Уникальные элементы шаблона
     title = "Редактировать рецепт"
     button_capture = "Сохранить изменения"
     action = "См. get_object"
 
-    template_name = "recipe_edit.html"
+    template_name = "recipes/recipe_edit.html"
     form_class = RecipeForm
     ingridients_list = []
 
     def get_object(self):
-        obj_id = self.kwargs['pk']
+        obj_id = self.kwargs["pk"]
         obj = Recipe.objects.get(id=obj_id)
 
-        self.action = reverse_lazy('recipe_edit', kwargs={'pk': obj_id})
+        self.action = reverse_lazy("recipe_edit", kwargs={"pk": obj_id})
 
         # Заполняем ingridients_list из связанной таблицы
-        qs = RecipeIngridient.objects.filter(recipe=obj)
+        qs = RecipeIngridient.objects.filter(recipe=obj).values()
         self.ingridients_list = []
+
         for recipeing in qs:
-            self.ingridients_list.append([recipeing.ingridient, recipeing.value])
+            ingridient = Ingridient.objects.get(id=recipeing["ingridient_id"])
+            self.ingridients_list.append([ingridient, recipeing["value"]])
 
         return obj
 
@@ -202,33 +207,39 @@ class RecipeEditView(UpdateView):
             form_class = self.form_class
             form = form_class(
                 {
-                    'title': obj.title,
-                    'description': obj.description,
-                    'image': obj.image,
-                    'tags': obj.tags.all(),
-                    'time': obj.time
+                    "title": obj.title,
+                    "description": obj.description,
+                    "image": obj.image,
+                    "tags": obj.tags.all(),
+                    "time": obj.time
                 }
             )
 
-            context['form'] = form
+            context["form"] = form
 
             for index, ing in enumerate(self.ingridients_list):
-                form.data['nameIngredient_' + str(index)] = ing[0].name
-                form.data['valueIngredient_' + str(index)] = ing[1]
+                form.data["nameIngredient_" + str(index)] = ing[0].name
+                form.data["valueIngredient_" + str(index)] = ing[1]
 
             form.is_valid()
 
-        context['title'] = self.title
-        context['action'] = self.action
-        context['button_capture'] = self.button_capture
+        context["title"] = self.title
+        context["action"] = self.action
+        context["button_capture"] = self.button_capture
 
         return context
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super(RecipeEditView, self).get_form_kwargs(*args, **kwargs)
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
 
         return kwargs
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            return HttpResponseNotAllowed(["GET", "POST"])
+        return super(RecipeEditView, self).dispatch(request, *args, **kwargs)
 
 
 "     ----    ----    ----    ----    ----    ----    ----    ----    ----    "
@@ -241,18 +252,21 @@ class RecipeEditView(UpdateView):
 
 
 # Страница рецепта
-@method_decorator(login_required, name='dispatch')
 class RecipeDetailView(DetailView):
-    template_name = "recipe.html"
+    template_name = "recipes/recipe.html"
     model = Recipe
 
     def get_context_data(self, **kwargs):
         context = super(RecipeDetailView, self).get_context_data(**kwargs)
 
-        recipe = Recipe.objects.get(id=self.kwargs['pk'])
-        subscribed = self.request.user.subscribes.filter(id=recipe.author.id).exists()
+        recipe = get_object_or_404(Recipe, id=self.kwargs["pk"])
 
-        context['subscribed'] = subscribed
+        if self.request.user.is_authenticated:
+            subscribed = self.request.user.subscribes.filter(id=recipe.author.id).exists()
+        else:
+            subscribed = []
+
+        context["subscribed"] = subscribed
         return context
 
 
@@ -269,10 +283,8 @@ API методы для работы с подписками, покупками
 def add_subscription(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        user_target = get_object_or_404(User, id=data['id'])
-
+        user_target = get_object_or_404(User, id=data["id"])
         request.user.subscribes.add(user_target)
-
 
         return JsonResponse({"success": True})
 
@@ -290,7 +302,7 @@ def remove_subscription(request, pk):
 def add_favorite(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        recipe_target = get_object_or_404(Recipe, id=data['id'])
+        recipe_target = get_object_or_404(Recipe, id=data["id"])
         request.user.favorites.add(recipe_target)
 
         return JsonResponse({"success": True})
@@ -307,10 +319,10 @@ def remove_favorite(request, pk):
 
 @login_required
 def add_purchases(request):
-    print('--------------------------')
+    print("--------------------------")
     if request.method == "POST":
         data = json.loads(request.body)
-        recipe_target = get_object_or_404(Recipe, id=data['id'])
+        recipe_target = get_object_or_404(Recipe, id=data["id"])
         request.user.shopping_list.add(recipe_target)
 
         return JsonResponse({"success": True})
@@ -323,3 +335,8 @@ def remove_purchases(request, pk):
         request.user.shopping_list.remove(recipe_target)
 
         return JsonResponse({"success": True})
+
+
+def custom_404_view(request, exception):
+    data = {"name": "yoursite.com"}
+    return render(request, "recipes/404.html", data)

@@ -3,6 +3,11 @@ from django.db import models
 
 # Единица измерения количества ингридиентов
 class Unit(models.Model):
+
+    class Meta:
+        verbose_name = "Единица измерения"
+        verbose_name_plural = "Единицы измерения"
+
     name = models.CharField(
         max_length=32,
         verbose_name="Единица измерения",
@@ -14,6 +19,11 @@ class Unit(models.Model):
 
 
 class Ingridient(models.Model):
+
+    class Meta:
+        verbose_name = "Ингридиент"
+        verbose_name_plural = "Ингридиенты"
+
     name = models.CharField(
         max_length=60,
         verbose_name="Ингридиент",

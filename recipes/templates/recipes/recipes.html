@@ -7,7 +7,7 @@
 
 {% block page_title %}Рецепты{% endblock %}
 {% block page_header_addon %}
-    {% include 'tags_filter.html' %}
+    {% include 'recipes/tags_filter.html' %}
 {% endblock%}
 
 {% block page_header_controlls %}{% endblock %}
@@ -43,16 +43,21 @@
                     <p class="card__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
                     <p class="card__text">
                         <span class="icon-user"></span> 
-                        <a href="{% url "profile" username=recipe.author.username %}" {% if not user.is_authenticated %} class="link_deactivated" {% endif %} style="color: black">{{ recipe.author.name }}</a>
+                        <a href="{% url "profile" username=recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a>
                     </p>
                 </div>
             </div>
             <div class="card__footer">
-                {% if recipe not in user.shopping_list.all %}
-                    <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon" data-out></span>Добавить в покупки</button>
-                {% else %} 
-                    <button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>   
+                {% if user.is_authenticated %}
+                    {% if recipe not in user.shopping_list.all %}
+                        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon" data-out></span>Добавить в покупки</button>
+                    {% else %} 
+                        <button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>   
+                    {% endif %}
+                {% else %}
+                    <a href="{% url "signin" %}?next={{ request.get_full_path }}"><button class="button button_style_light-blue" ><span class="icon-plus button__icon" data-out></span>Добавить в покупки</button></a>
                 {% endif %}
+
 
                 {% if user.is_authenticated %}
 
@@ -70,7 +75,11 @@
 
 </div>
 
-{% include 'pagination.html' %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+    {% include 'recipes/pagination.html' %}
+{% endif %}
+
 
 
 
