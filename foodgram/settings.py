@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [os.getenv("SERVER_IP"), "localhost", os.getenv("SERVER_DOMAIN_NAME")]
 
@@ -152,7 +152,7 @@ MEDIA_URL = "/media/"
 
 USE_GSMTP = True
 
-"""
+
 if not DEBUG and USE_GSMTP:
     EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
     EMAIL_HOST = os.getenv("EMAIL_HOST")
@@ -163,13 +163,6 @@ if not DEBUG and USE_GSMTP:
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
     EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-"""
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_USE_TLS = True
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 
 # Static page settings
