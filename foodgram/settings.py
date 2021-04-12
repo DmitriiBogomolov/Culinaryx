@@ -130,6 +130,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+import _locale
+_locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
 
 # Static files (CSS, JavaScript, Images)
 

@@ -148,7 +148,6 @@ frontend/
 .ingridients
 ingridients/
 
-
 # sent_emails
 .sent_emails
 sent_emails/
@@ -161,6 +160,8 @@ vscode/
 .ingredients
 ingredients/
 
-
 .helpers
 helpers/
+
+.ingr
+ingr/

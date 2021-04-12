@@ -1,40 +1,46 @@
-# yamdb
+# Продуктовый помощник
 
-База отзывов о фильмах, книгах и музыке.
+Cайт, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Сервис «Список покупок» позволяет пользователям создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
-http://www.yatubetest.ml/redoc/
+http://www.yatubetest.ml/
 
-## установка
+## Установка
 
 Склонировать репозиторий, разместить .env в директории с проектом.
 
 ```python
-SECRET_KEY=******
-EMAIL_HOST_USER=******
-DB_ENGINE=******
-DB_NAME=******
-POSTGRES_USER=******
-POSTGRES_******
-DB_HOST=******
-DB_PORT=******
+DB_ENGINE=********
+DB_NAME=********
+POSTGRES_USER=********
+POSTGRES_PASSWORD=********
+DB_HOST=********
+DB_PORT=********
+SECRET_KEY=********
+SERVER_IP=********
+SERVER_DOMAIN_NAME=********
+EMAIL_HOST_USER=********
+EMAIL_HOST_PASSWORD=********
+EMAIL_PORT=********
+EMAIL_HOST=********
+EMAIL_BACKEND=********
 ```
 
 Запустить docker-compose
 
 ```bash
+docker-compose build
 docker-compose up
 ```
 
-## использование
+## Инструментарий
 
-Документация к проекту
-```
-localhost/redoc
-```
+1. Django
+2. Docker
+3. GitHub Actions
 
 ## Лицензия
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ## Статус workflow
 
-![yamdb](https://github.com/dmitriibogomolov/yamdb_final/workflows/yamdb_final%20workflow/badge.svg?branch=master)
+![foodgram](https://github.com/dmitriibogomolov/foodgram-project/workflows/foodgram%20workflow/badge.svg?branch=master)
