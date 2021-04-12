@@ -5,7 +5,7 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordChangeView,
                                        PasswordResetConfirmView,
                                        PasswordResetView)
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import TemplateView

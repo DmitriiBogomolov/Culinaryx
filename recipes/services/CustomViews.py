@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 
@@ -5,7 +6,6 @@ from recipes.models import Recipe, RecipeIngridient, Tag
 
 from .QueryFilters import filter_by_tags, parse_filters_from_url
 from .SafePaginator import SafePaginator
-from django.core.exceptions import ImproperlyConfigured
 
 
 class FilteredListView(ListView):

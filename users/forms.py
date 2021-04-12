@@ -1,7 +1,8 @@
+from django import forms
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
                                        ValidationError)
-from django import forms
+
 from .validators import validate_name
 
 User = get_user_model()
