@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv("SERVER_IP"), "localhost"]
+ALLOWED_HOSTS = [os.getenv("SERVER_IP"), "localhost", os.getenv("SERVER_DOMAIN_NAME")]
 
 
 # Application definition
