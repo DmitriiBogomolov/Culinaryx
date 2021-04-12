@@ -48,7 +48,6 @@ class Recipe(models.Model):
     )
 
     description = models.TextField(
-        max_length=300,
         verbose_name="Описание"
     )
 
