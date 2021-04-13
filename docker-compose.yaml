@@ -25,14 +25,13 @@ services:
     env_file:
       - ./.env 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
+    image: nginx:1.19
     container_name: web
     volumes:
       - ./helpers/templates:/etc/nginx/templates
       - ./static/:/app/static/
       - ./media/:/app/media/
+      - ./nginx:/etc/nginx/conf.d
     ports:
       - "80:80"
     environment:
