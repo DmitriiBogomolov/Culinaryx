@@ -30,11 +30,13 @@ docker-compose build
 docker-compose up
 ```
 
-## Инструментарий
+## Технологии
 
 1. Django
-2. Docker
-3. GitHub Actions
+2. PostgreSQL
+3. Docker
+4. Nginx, Gunicorn
+4. GitHub Actions
 
 ## Лицензия
 [MIT](https://choosealicense.com/licenses/mit/)
