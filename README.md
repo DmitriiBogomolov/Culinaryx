@@ -1,48 +1,43 @@
-# Продуктовый помошник на Django.
+# Product helper
 
-Приложение, где пользователи могут:
+Приложение "продуктовый помошник", где пользователи могут:
 - создавать и заполнять профили;
 - подписываться друг на друга;
 - публиковать, комментировать, оценивать, кулинарные рецепты;
 - формировать и скачивать персональные списки продуктов для приготовления понравившихся блюд;
 - получать доступ к функциональности приложения в зависимости от установленных прав доступа.
 
-## Установка
+Алгоритм регистрации пользователей:
+1. Пользователь отправляет запрос на регистрацию.
+2. Приложение отправляет письмо с кодом подтверждения.
+3. Пользователь отправляет запрос с кодом подтверждения.
+4. При желании пользователь отправляет запрос на изменение данных профиля.
 
-Склонировать репозиторий, разместить .env в директории с проектом.
+## Как использовать
 
-```python
-DB_ENGINE=********
-DB_NAME=********
-POSTGRES_USER=********
-POSTGRES_PASSWORD=********
-DB_HOST=********
-DB_PORT=********
-SECRET_KEY=********
-SERVER_IP=********
-SERVER_DOMAIN_NAME=********
-EMAIL_HOST_USER=********
-EMAIL_HOST_PASSWORD=******** 
-EMAIL_PORT=********
-EMAIL_HOST=********
-EMAIL_BACKEND=********
-```
+1. Запустить docker-compose
 
-Запустить docker-compose
+        docker-compose up --build
 
-```bash
-docker-compose build
-docker-compose up
-```
+2. Остановка:
+
+        docker-compose down -v
 
 ## Технологии
 
 1. Django
 2. PostgreSQL
 3. Docker
-4. Nginx, Gunicorn
-4. GitHub Actions
+4. Gunicorn
+5. NGINX
+6. GitHub Actions
+
+## Скриншоты
+
+![1](https://github.com/DmitriiBogomolov/product_helper/blob/master/media/refs/1.png)
+![2](https://github.com/DmitriiBogomolov/product_helper/blob/master/media/refs/2.png)
+![3](https://github.com/DmitriiBogomolov/product_helper/blob/master/media/refs/3.png)
+![4](https://github.com/DmitriiBogomolov/product_helper/blob/master/media/refs/4.png)
 
 ## Лицензия
 [MIT](https://choosealicense.com/licenses/mit/)
-

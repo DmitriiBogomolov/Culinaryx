@@ -3,7 +3,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+dotenv_path = Path('.env.example')
+load_dotenv(dotenv_path=dotenv_path)
 
 
 APP_TITLE = "Foodgram"
@@ -15,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [os.getenv("SERVER_IP"), "localhost", os.getenv("SERVER_DOMAIN_NAME")]
 

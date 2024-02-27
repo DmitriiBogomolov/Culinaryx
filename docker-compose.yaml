@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env
+      - ./.env.example
   app:
     build: .
     restart: always
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ./.env 
+      - ./.env.example
   web:
     image: nginx:1.19
     container_name: web
